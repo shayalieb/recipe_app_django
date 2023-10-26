@@ -1,30 +1,33 @@
 from django.test import TestCase
-from django.core.files.uploadedfile import SimpleUploadedFile
 from .models import recipes
 
-# Test class for the "recipes" model
 class RecipeModelTest(TestCase):
-    recipes.objects.create(
-        name='Rice', 
-        cooking_time=40, 
-        ingredients='rice, water, salt',
-        instructions='boil water, add rice, add salt, cook for 40 minutes',
-    )
+    @classmethod
+    def setUpTestData(cls):
+        # Set up non-modified objects used by all test methods
+        recipes.objects.create(name='Rice', cooking_time=40, ingredients='rice, water, salt', instructions='boil water, add rice, add salt, cook for 40 minutes')
 
-    # Test that the recipe name is correct
-    def test_recipe_name(self):
+    def test_name_label(self):
         recipe = recipes.objects.get(id=1)
-        recipe_name_label = recipe._meta.get_field('name').verbose_name
-        self.assertEquals(recipe_name_label, 'name')
+        field_label = recipe._meta.get_field('name').verbose_name
+        self.assertEquals(field_label, 'name')
 
-    # Test cooking_time is an integer and has the correct response
-    def test_cooking_time_helptext(self):
+    def test_ingredients_label(self):
         recipe = recipes.objects.get(id=1)
-        recipe_cooking_time = recipe._meta.get_field('cooking_time').help_text
-        self.assertEqual(recipe_cooking_time, 'in minutes')
+        field_label = recipe._meta.get_field('ingredients').verbose_name
+        self.assertEquals(field_label, 'ingredients')
 
+    def test_cooking_time_label(self):
+        recipe = recipes.objects.get(id=1)
+        field_label = recipe._meta.get_field('cooking_time').verbose_name
+        self.assertEquals(field_label, 'cooking time')
 
-  
+    def test_instructions_label(self):
+        recipe = recipes.objects.get(id=1)
+        field_label = recipe._meta.get_field('instructions').verbose_name
+        self.assertEquals(field_label, 'instructions')
 
-
-        
+    def test_name_max_length(self):
+        recipe = recipes.objects.get(id=1)
+        max_length = recipe._meta.get_field('name').max_length
+        self.assertEquals(max_length, 30)
