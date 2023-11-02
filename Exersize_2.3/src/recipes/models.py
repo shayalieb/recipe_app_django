@@ -1,6 +1,7 @@
 from django.db import models
 
 class recipes(models.Model):
+    pic = models.ImageField(upload_to='recipes', default='no_image.svg')
     name = models.CharField(max_length=30)
     ingredients = models.CharField(max_length=500)  
     cooking_time = models.IntegerField()
