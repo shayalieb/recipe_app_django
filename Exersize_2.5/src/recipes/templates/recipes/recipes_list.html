@@ -1,25 +1,73 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe List View</title>
+    <style>
+        body::after {
+            content: "";
+            background: url("{% static 'recipes/images/recipe_img-1.jpg' %}") no-repeat center center fixed; 
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            opacity: 0.8;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            position: absolute;
+            z-index: -1;   
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, 10%);
+        }
+        .recipe-name {
+            justify-content: center;
+            align-items: center;
+            color: rgb(145, 22, 0);
+            font-weight: bold;
+            font-size: large;
+        }
+    </style>
 </head>
 <body>
-    <h1 style="text-align: center;">Recipe App List</h1> 
-    <table border="0.5" cellpadding="5" cellspacing="5" align="center">
-        <tr>
-            <th>Recipe Name</th>
-            <th>Recipe Image</th>
-        </tr>
-        {% for object in object_list %}
-        <tr>
-            <td>{{object.name}}</td>
-            <td><img src="{{object.pic.url}}" width="300" height="200" /></td>
-        </tr>
-        {% endfor %}
-    {% for object in object_list %} 
+    <a class="back-btn" href="javascript:history.back()">Go Back</a>
+    <div class="content">
 
-    {% endfor %}
+        <table border="0.5" cellpadding="5" cellspacing="5" align="center">
+            <tr>
+                <th colspan="2">
+                    <h1>Recipe List</h1>
+                </th>
+            </tr>
+            {% for object in object_list %}
+            <tr>
+                <td>
+                    <a class="recipe-name" href="{% url 'recipe-detail' object.id %}">{{object.name}}</a>
+                </td>
+            </tr>
+            <tr>
+                <td class="recipe-img">
+                    <img src="{{object.pic.url}}" width="500" height="350" />
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 </html>

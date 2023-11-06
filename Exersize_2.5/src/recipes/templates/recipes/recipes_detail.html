@@ -1,16 +1,60 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Details View</title>
+    <style>
+      body::after {
+            content: "";
+            background: url("{% static 'recipes/images/recipe_img-1.jpg' %}") no-repeat center center fixed; 
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            opacity: 0.8;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            position: absolute;
+            z-index: -1;   
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            padding-left: 25%;
+            padding-right: 25%;
+        }
+    </style>
 </head>
 <body>
-    <h2>Details: {{object.name}}</h2>
-    <img src="{{object.pic.url}}" width="300" height="200" />
-    <b>Name</b> {{object.name}}<br>
-    <b>Ingredients </b> {{object.ingredients}}<br>
-    <b>Instructions </b> {{object.instructions}}<br>
-    <b>cooking_time</b> {{object.cooking_time}}<br>
+    <div class="center-content">
+        <a href="javascript:history.back()">Go Back</a>
+        <h1>{{object.name}}</h1>
+        <img src="{{object.pic.url}}" width="600" height="500" />
+        <h1>Difficulty: {{ object.calculate_difficulty }}<br>
+        <h2>Ingredients </h2> {{object.ingredients}}<br>
+        <br>
+        <h2>Instructions </h2> {{object.instructions}}<br>
+        <br>
+        <h2>Cooking Time (min)</h2> {{object.cooking_time}}<br>
+        <br>
+    </div>
+    
 </body>
 </html>

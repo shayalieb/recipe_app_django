@@ -1,5 +1,8 @@
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.urls import reverse
 from .models import recipes
+from .views import RecipeListView, RecipeDetailView
+
 
 class RecipeModelTest(TestCase):
     @classmethod
@@ -31,3 +34,4 @@ class RecipeModelTest(TestCase):
         recipe = recipes.objects.get(id=1)
         max_length = recipe._meta.get_field('name').max_length
         self.assertEquals(max_length, 30)
+
