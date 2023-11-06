@@ -35,3 +35,35 @@ class RecipeModelTest(TestCase):
         max_length = recipe._meta.get_field('name').max_length
         self.assertEquals(max_length, 30)
 
+class RecipeListViewTest(TestCase):
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('recipes_list'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('recipes_list'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('recipes_list'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'recipes/recipes_list.html')
+
+class RecipeDetailViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Set up non-modified objects used by all test methods
+        recipes.objects.create(name='Test Recipe', cooking_time=40) 
+
+    def test_view_url_exists_at_desired_location(self):
+        resp = self.client.get('/recipes/1/')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        resp = self.client.get(reverse('recipe-detail', args=[1]))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        resp = self.client.get(reverse('recipe-detail', args=[1]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, 'recipes/recipes_detail.html')        
