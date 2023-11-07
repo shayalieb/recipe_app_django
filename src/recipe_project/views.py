@@ -1,6 +1,6 @@
 # Import libraries for views.py and django form authentication
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
 
@@ -25,4 +25,11 @@ def login_view(request: HttpRequest):
             error_message = 'Invalid username or password'
             context = {'form': form, 'error_message': error_message}
     return render(request, 'login.html', context)
+
+def logout_view(request: HttpRequest):
+    logout(request)
+    return redirect('logout_success')
+
+def logout_success(request):
+    return render(request, 'success.html')
 

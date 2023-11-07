@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logout Successful</title>
+</head>
+<body>
+    <h1>You've successfully logged out.</h1>
+    <p><a href="/login/">Click here</a> to log back in.</p>
+
+    <!-- Let's add a feature to show the current time -->
+    <p>Current time: <span id="current_time"></span></p>
+
+    <script>
+        document.getElementById('current_time').innerText = new Date().toLocaleString();
+    </script>
+</body>
+</html>
