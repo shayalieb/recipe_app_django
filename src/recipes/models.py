@@ -11,15 +11,10 @@ class recipes(models.Model):
     #cConfigure the difficulty level to be shown in the main user side
     def calculate_difficulty(self):
         ingredients = self.ingredients.split(',')
-        if self.cooking_time < 30 and len(ingredients) < 6:
-            return 'Easy'
-        elif self.cooking_time < 30 and len(ingredients) >= 6:
-            return 'Medium'
-        elif self.cooking_time >= 30 and len(ingredients) < 6:
-            return 'Intermediate'
-        elif self.cooking_time >= 30 and len(ingredients) >= 6:
-            return 'Hard'
-        return 'difficulty'
+        if self.cooking_time < 30:
+            return 'Easy' if len(ingredients) < 6 else 'Medium'
+        else:
+            return 'Intermediate' if len(ingredients) < 6 else 'Hard'
     
     def __str__(self):
         return str(self.name)
