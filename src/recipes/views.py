@@ -19,8 +19,7 @@ class RecipeListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        q = self.request.GET.get('recipes')
-        if q:
+        if (q := self.request.GET.get('recipes')):
             return queryset.filter(name__icontains=q)
         return queryset
 
@@ -36,7 +35,6 @@ class RecipeSearchView(LoginRequiredMixin, ListView):
     template_name = 'recipes/recipe_search.html'
 
     def get_queryset(self):
-        query = self.request.GET.get('recipes')
-        if query:
+        if (query := self.request.GET.get('recipes')):
             return recipes.objects.filter(name__icontains=query)
         return recipes.objects.all()
