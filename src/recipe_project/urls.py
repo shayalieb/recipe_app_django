@@ -18,8 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import login_view, logout_view, logout_success
-
+from .views import login_view, logout_view, logout_success, search_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('recipes.urls')),
@@ -27,6 +26,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('logout_success/', logout_success, name='logout_success'),
+    path('search/', search_view, name='search'),
 ]
 
 if settings.DEBUG:

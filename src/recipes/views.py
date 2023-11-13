@@ -6,6 +6,7 @@ from django.views.generic import ListView, DeleteView
 from .models import recipes
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import SearchForm
+# from django.http import HttpResponseRedirect
 
 # define the home view here - function based view
 def home(request):
@@ -18,12 +19,21 @@ class RecipeListView(LoginRequiredMixin, ListView):
     context_object_name = 'recipes'
     ordering = ['name']
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        if (q := self.request.GET.get('recipes')):
-            return queryset.filter(name__icontains=q)
-        return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SearchForm()
+        return context
 
+    def post(self, request, *args, **kwargs):
+        form = SearchForm(request.POST)
+        if not form.is_valid():
+            return super().get(request, *args, **kwargs)
+
+        query = form.cleaned_data['name']
+        query = form.cleaned_data['ingredients']
+        self.object_list = self.model.objects.filter(name__icontains=query)
+        context = self.get_context_data(object_list=self.object_list, form=form)
+        return render(request, self.template_name, context)
 # Recipe detail view here - class based view
 class RecipeDetailView(LoginRequiredMixin, DeleteView):
     model = recipes
@@ -31,43 +41,27 @@ class RecipeDetailView(LoginRequiredMixin, DeleteView):
     context_object_name = 'recipes_detail'
     ordering = ['name']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SearchForm()
+        return context
+    
+    
+
 
 def search_view(request):
-    #create an instance of SalesSearchForm that you defined in sales/forms.py
     form = SearchForm(request.POST or None)
-    #name = None
+    if form.is_valid():
+        name = form.cleaned_data['name']
+        if name:
+            results = recipes.objects.filter(name__icontains=name) if name else []
+        else:
+            results = []
+        if results:
+            message = "Results:" if results else f"Recipe '{name}' not found."
+        else:
+            message = f"Recipe '{name}' not found."
 
-    #check if the button is clicked
-    if request.method =='POST':
-        name = request.POST.get('name', '')
-        chart_type = request.POST.get('chart_type', '1')
-    # process the name and chart_type here
-    # then return a HttpResponse
-        return render(request, 'your_template.html', {'name': name, 'chart_type': chart_type})
+        return render(request, 'search.html', {'form': form, 'results': results, 'message': message})
 
-    print ('Exploring querysets:')
-    print ('Case 1: Output of recipes.objects.all()')
-    qs = recipes.objects.filter(name)
-    print (qs)
-
-    print ('Case 2: Output of Sale.objects.filter(book_name=book_title)')
-    qs = recipes.objects.filter(recipes=name)
-    print (qs)
-
-    print ('Case 3: Output of qs.recipes')
-    print (qs.values())
-
-    print ('Case 4: Output of qs.v(recipes_list)')
-    print (qs.values_list())
-
-    print ('Case 5: Output of recipes.objects.get(id=1)')
-    obj = recipes.objects.get(id=1)
-    print (obj)
-
-   #pack up data to be sent to template in the context dictionary
-    context={
-            'form': form,
-    }
-
-   #load the sales/record.html page using the data that you just prepared
-    return render(request, 'sales/search.html', context)
+    return render(request, 'search.html', {'form': form})

@@ -9,11 +9,12 @@
     <h1> Search for sales records </h1>
 
     <hr>
-    <form action="" method="POST">
-       {% csrf_token %}
-       {{form}}
-       <button type="submit" >search</button>
-    
+    <form method="POST" action="/recipes/search/">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Search</button>
+        <input type="hidden" name="show_all" value="true">
+        <input type="submit" value="Show All">
     </form>
     
 </body>

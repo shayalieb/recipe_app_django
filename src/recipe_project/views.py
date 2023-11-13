@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpRequest
 from django.shortcuts import redirect, render
+from recipes.forms import SearchForm
+from recipes.models import recipes
 
 # When the user hits the LOGIN button the post request is
 def login_view(request: HttpRequest):
@@ -25,6 +27,18 @@ def login_view(request: HttpRequest):
             error_message = 'Invalid username or password'
             context = {'form': form, 'error_message': error_message}
     return render(request, 'login.html', context)
+
+def search_view(request):
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['search_field']  # replace 'search_field' with the name of your search field
+            results = recipes.objects.filter(name__icontains=query)  # replace 'name' with the field you want to search
+            return render(request, 'search.html', {'form': form, 'results': results})
+    else:
+        form = SearchForm()
+
+    return render(request, 'search.html', {'form': form})
 
 def logout_view(request: HttpRequest):
     logout(request)
