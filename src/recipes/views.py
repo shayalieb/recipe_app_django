@@ -6,6 +6,7 @@ from django.views.generic import ListView, DeleteView
 from .models import recipes
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import SearchForm
+from django.db.models import Q
 # from django.http import HttpResponseRedirect
 
 # define the home view here - function based view
@@ -13,6 +14,7 @@ def home(request):
     return render(request, 'recipes/recipes_home.html')
 
 # Create the recipe list view here - Class based view
+
 class RecipeListView(LoginRequiredMixin, ListView):
     model = recipes
     template_name = 'recipes/recipes_list.html'
@@ -23,15 +25,15 @@ class RecipeListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = SearchForm()
         return context
-
     def post(self, request, *args, **kwargs):
         form = SearchForm(request.POST)
         if not form.is_valid():
             return super().get(request, *args, **kwargs)
 
-        query = form.cleaned_data['name']
-        query = form.cleaned_data['ingredients']
-        self.object_list = self.model.objects.filter(name__icontains=query)
+        name_query = form.cleaned_data['name']
+        ingredients_query = form.cleaned_data['ingredients']
+        self.object_list = self.model.objects.filter(name__icontains=name_query)
+        self.object_list = self.model.objects.filter(name__icontains=ingredients_query)
         context = self.get_context_data(object_list=self.object_list, form=form)
         return render(request, self.template_name, context)
 # Recipe detail view here - class based view
