@@ -30,10 +30,10 @@ class RecipeListView(LoginRequiredMixin, ListView):
         if not form.is_valid():
             return super().get(request, *args, **kwargs)
 
-        name_query = form.cleaned_data['name']
-        ingredients_query = form.cleaned_data['ingredients']
+        name_query = form.cleaned_data['search_term']
+        # ingredients_query = form.cleaned_data['ingredients']
         self.object_list = self.model.objects.filter(name__icontains=name_query)
-        self.object_list = self.model.objects.filter(name__icontains=ingredients_query)
+        # self.object_list = self.model.objects.filter(name__icontains=ingredients_query)
         context = self.get_context_data(object_list=self.object_list, form=form)
         return render(request, self.template_name, context)
 # Recipe detail view here - class based view

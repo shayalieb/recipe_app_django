@@ -11,8 +11,8 @@ CHART_CHOICES = (
 
 
 class SearchForm(forms.Form):
-    name = forms.CharField(required=False)
-    ingredients = forms.CharField(max_length=200, required=False)
+    search_term = forms.CharField(max_length=200, required=False, label="Search Recipes")
+    # ingredients = forms.CharField(max_length=200, required=False)
     chart_type = forms.ChoiceField(choices=[('barchart', 'Bar Chart'), ('piechart', 'Pie Chart')], required=False)
     show_all = forms.BooleanField(required=False) 
 
@@ -21,7 +21,7 @@ class SearchForm(forms.Form):
 
         results = []
         if form.is_valid():
-            query = form.cleaned_data['query']
+            query = form.cleaned_data['search_term']
             results = recipes.objects.filter(name=query) # adjust this line to match your search criteria
 
         return render(request, 'search.html', {'results': results})
