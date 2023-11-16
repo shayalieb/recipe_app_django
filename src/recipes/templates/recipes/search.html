@@ -15,7 +15,13 @@
         <button type="submit">Search</button>
         <input type="hidden" name="show_all" value="true">
         <input type="submit" value="Show All">
+        <img src="data:image/png;base64,{{ image_url }}" />
     </form>
     
+    <img src="{% static 'bar_plot.png' %}" alt="Bar Plot">
+    <img src="{% static 'pie_plot.png' %}" alt="Pie Plot">
+    <img src="{% static 'line_plot.png' %}" alt="Line Plot">
+
+    <script src="https://js.stripe.com/v3/"></script>
 </body>
 </html>

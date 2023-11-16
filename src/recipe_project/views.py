@@ -1,4 +1,10 @@
 # Import libraries for views.py and django form authentication
+import matplotlib.pyplot as plt
+import os
+import io
+import urllib, base64
+from django.conf import settings
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpRequest
@@ -28,17 +34,46 @@ def login_view(request: HttpRequest):
             context = {'form': form, 'error_message': error_message}
     return render(request, 'login.html', context)
 
+def generate_plots():
+    fig, ax = plt.subplots()
+    ax.bar(...)  # Fill in with your data
+    fig.savefig(os.path.join(settings.STATIC_ROOT, 'bar_plot.png'))
+
+    fig, ax = plt.subplots()
+    ax.pie(...)  # Fill in with your data
+    fig.savefig(os.path.join(settings.STATIC_ROOT, 'pie_plot.png'))
+
+    fig, ax = plt.subplots()
+    ax.plot(...)  # Fill in with your data
+    fig.savefig(os.path.join(settings.STATIC_ROOT, 'line_plot.png'))
+
+def process_search_form(form):
+    return recipes.objects.filter(name__icontains=form.cleaned_data.get('search_term'))    
+
 def search_view(request):
     if request.method == 'POST':
         form = SearchForm(request.POST)
         if form.is_valid():
-            query = form.cleaned_data['search_field']  # replace 'search_field' with the name of your search field
-            results = recipes.objects.filter(name__icontains=query)  # replace 'name' with the field you want to search
-            return render(request, 'search.html', {'form': form, 'results': results})
+            results = process_search_form(form)
+            generate_plots()
+            return render(request, 'search.html', {
+                'form': form, 
+                'results': results,
+                'bar_plot': 'bar_plot.png',
+                'pie_plot': 'pie_plot.png',
+                'line_plot': 'line_plot.png',
+            })
     else:
         form = SearchForm()
+        return render(request, 'search.html', {'form': form})
 
-    return render(request, 'search.html', {'form': form})
+def plot_view(request):
+    generate_plots()  # This will generate the plot image
+    image = io.BytesIO()
+    plt.savefig(image, format='png')
+    image.seek(0)
+    image_url = urllib.parse.quote(base64.b64encode(image.read()))
+    return render(request, 'search.html', {'image_url': image_url})
 
 def logout_view(request: HttpRequest):
     logout(request)
@@ -46,4 +81,3 @@ def logout_view(request: HttpRequest):
 
 def logout_success(request):
     return render(request, 'success.html')
-

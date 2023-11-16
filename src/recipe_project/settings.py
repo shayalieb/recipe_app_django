@@ -59,6 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [BASE_DIR / 'templates/auth'],
+        # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',  # For media files
             ],
         },
     },
@@ -133,4 +135,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 #AUTH for login
 LOGIN_URL = '/login/'
 
-CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", "'unsafe-eval'", "https://js.stripe.com/v3")
+CSP_SCRIPT_SRC = ("'self'", "'wasm-unsafe-eval'", "'inline-speculation-rules'", "https://js.stripe.com")
