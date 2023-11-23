@@ -46,20 +46,24 @@
     </style>
 </head>
 <body>
-    <a href ="{%url 'logout' %}"> Logout </a>
+    <div>
+        <a href ="{%url 'recipes_list' %}"> Home </a> &nbsp;&nbsp;&nbsp;
+        <a href ="{%url 'search' %}"> Search </a> &nbsp;&nbsp;&nbsp;
+        <a href ="{%url 'logout' %}"> Logout </a>
+    </div>
     <br>
     <br>
     <div class="content">
-        <form method="POST">
+         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Search</button>
-        </form>
+        </form> 
         <br>
         <table border="0.5" cellpadding="5" cellspacing="5" align="center">
             <tr>
                 <th colspan="2">
-                    <h1>Recipe List</h1>
+                    <h1>Ingredients in Each Recipe</h1>
                 </th>
             </tr>
             {% for object in object_list %}
