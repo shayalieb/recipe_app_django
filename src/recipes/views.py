@@ -5,8 +5,11 @@ from django.views.generic import ListView, DeleteView
 #import the model
 from .models import recipes
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import SearchForm
+from .forms import SearchForm, RecipeSearchForm
 from django.db.models import Q
+import pandas as pd
+from .utils import get_recipename_from_id, get_chart
+
 # from django.http import HttpResponseRedirect
 
 # define the home view here - function based view
@@ -36,6 +39,7 @@ class RecipeListView(LoginRequiredMixin, ListView):
         # self.object_list = self.model.objects.filter(name__icontains=ingredients_query)
         context = self.get_context_data(object_list=self.object_list, form=form)
         return render(request, self.template_name, context)
+    
 # Recipe detail view here - class based view
 class RecipeDetailView(LoginRequiredMixin, DeleteView):
     model = recipes
@@ -52,18 +56,28 @@ class RecipeDetailView(LoginRequiredMixin, DeleteView):
 
 
 def search_view(request):
-    form = SearchForm(request.POST or None)
-    if form.is_valid():
-        name = form.cleaned_data['name']
-        if name:
-            results = recipes.objects.filter(name__icontains=name) if name else []
-        else:
-            results = []
-        if results:
-            message = "Results:" if results else f"Recipe '{name}' not found."
-        else:
-            message = f"Recipe '{name}' not found."
+    form = RecipeSearchForm(request.POST or None)
+    recipe_df = None
+    chart = None
+    qs = None
+    #check if button is clicked 
+    if request.method == 'POST':
+        #check chart type
+        chart_type = request.POST.get('chart_type')
 
-        return render(request, 'search.html', {'form': form, 'results': results, 'message': message})
+        qs = recipes.objects.all()
+        if qs:
+            recipe_df = pd.DataFrame(qs.values())
+            chart = get_chart(chart_type, recipe_df,
+                              labels=recipe_df['name'].values)
 
-    return render(request, 'search.html', {'form': form})
+            recipe_df = recipe_df.to_html()
+    #pack up data to be sent to template in the context dictionary
+    context = {
+        'form': form,
+        'recipe_df': recipe_df,
+        'chart': chart,
+        'qs': qs,
+    }
+    #load the recipes/search.html page using the data that was just prepared above
+    return render(request, 'recipes/search.html', context)
